@@ -6,6 +6,9 @@ use conway::*;
 use macroquad::prelude::*;
 use std::collections::HashSet;
 
+// Differentiation viewport from grid dimensions purposedly JustInCase TM
+const VIEWPORT_WIDTH: usize = 21 * 6;
+const VIEWPORT_HEIGHT: usize = 9 * 6;
 const GRID_WIDTH: usize = 21 * 6;
 const GRID_HEIGHT: usize = 9 * 6;
 const CELL_SIZE_PX: f32 = 16.0;
@@ -13,8 +16,6 @@ const GRID_WIDTH_PX: f32 = GRID_WIDTH as f32 * CELL_SIZE_PX;
 const GRID_HEIGHT_PX: f32 = GRID_HEIGHT as f32 * CELL_SIZE_PX;
 const UI_WIDTH_PX: f32 = 200.0;
 const TICK_DURATION: f32 = 0.2;
-const VIEWPORT_WIDTH: usize = 21 * 6;
-const VIEWPORT_HEIGHT: usize = 9 * 6;
 
 type Coord = (i32, i32);
 type Grid = HashSet<Coord>;
@@ -140,7 +141,7 @@ async fn main() {
             GRID_WIDTH_PX,
             0.0,
             UI_WIDTH_PX,
-            GRID_HEIGHT as f32 * CELL_SIZE_PX,
+            GRID_HEIGHT_PX,
             Color::new(0.8, 0.8, 0.8, 1.0),
         );
 
