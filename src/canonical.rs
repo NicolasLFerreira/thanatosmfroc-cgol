@@ -1,6 +1,8 @@
 use crate::Grid;
 
-pub fn canonical_entry_point(cells: &Grid) {
+/// Computes the canonical representation of a given cell configuration, independent of rotation and mirroring.
+/// * `cells` - The original, absolute, non-normalized configuration
+pub fn compute_canonical(cells: &Grid) -> Vec<(u32, u32)> {
     // Converts to vec for easier handling
     let cells: Vec<_> = cells.iter().collect();
 
@@ -89,6 +91,8 @@ pub fn canonical_entry_point(cells: &Grid) {
     let canonical = ordered.iter().min().unwrap();
 
     println!("{:?}", canonical);
+
+    canonical.to_vec()
 }
 
 // Canonicalization rules:
