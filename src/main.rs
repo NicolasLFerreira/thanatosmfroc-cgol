@@ -46,7 +46,7 @@ fn start_simulation(seed_cells: Vec<CellCoord>, feed: SimulationFeed) {
         feed.store(Arc::new(SimulationPayload::new(Some(cconf.clone()))));
 
         // Currently capping for UI and development
-        thread::sleep(Duration::from_millis(2));
+        thread::sleep(Duration::from_millis(100));
     }
 }
 
