@@ -3,6 +3,7 @@ use crate::types::cell_configuration::CellConfiguration;
 use wyhash::wyhash;
 
 /// Heart of Thanatos: MFROC
+/// Thanatos: Memoized Forward-Reachability Orbit-Collapsing Algorithm for CGoL
 pub fn run(configuration: &CellConfiguration) {
     let canonical = compute_canonical(configuration);
     let hash = compute_hash(&canonical);
@@ -12,8 +13,8 @@ pub fn run(configuration: &CellConfiguration) {
 
 fn compute_hash(canonical: &Vec<(u32, u32)>) -> u128 {
     // seeding for hash halves
-    const SEED_1: u64 = 0xAC4A_7D85_5FB9_35A7;
-    const SEED_2: u64 = 0xED93_523A_FBA6_FCD1;
+    const SEED_1: u64 = 2;
+    const SEED_2: u64 = 3;
 
     // flattens and converts u32->u8
     let mut bytes: Vec<u8> = vec![0; canonical.len() * 8];

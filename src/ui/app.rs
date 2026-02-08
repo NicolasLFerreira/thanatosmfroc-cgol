@@ -1,24 +1,23 @@
+use crate::CELL_SIZE_PX;
 use crate::types::cell_configuration::CellConfiguration;
-use crate::types::cell_coord::CellCoord;
-use crate::types::simulation_state::SimulationState;
-use crate::{logical_step, CELL_SIZE_PX};
+use crossbeam::atomic::AtomicCell;
+use std::sync::Arc;
 
 pub struct App {
     grid_pan: egui::Vec2,
     show_grid: bool,
-    sim_state: SimulationState,
+    shared: Arc<AtomicCell<Arc<CellConfiguration>>>,
 }
 
 impl App {
-    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    pub fn new(
+        cc: &eframe::CreationContext<'_>,
+        shared: Arc<AtomicCell<Arc<CellConfiguration>>>,
+    ) -> Self {
         Self {
             grid_pan: egui::Vec2::default(),
             show_grid: false,
-            sim_state: SimulationState {
-                cell_configuration: CellConfiguration::new(),
-                step_once: false,
-                is_running: false,
-            },
+            shared,
         }
     }
 }
@@ -49,14 +48,14 @@ impl eframe::App for App {
             ui.heading("Grid tools");
             ui.checkbox(&mut self.show_grid, "Show Grid (laggy)");
             ui.heading("Simulation tools");
-            ui.checkbox(&mut self.sim_state.is_running, "Run");
-            if ui.button("Step").clicked() {
-                self.sim_state.step_once = true;
-            }
-            if ui.button("Clear").clicked() {
-                self.sim_state.cell_configuration = CellConfiguration::new();
-                self.grid_pan = egui::Vec2::default();
-            }
+            // ui.checkbox(&mut self.sim_state.is_running, "Run");
+            // if ui.button("Step").clicked() {
+            //     self.sim_state.step_once = true;
+            // }
+            // if ui.button("Clear").clicked() {
+            //     self.sim_state.cell_configuration = CellConfiguration::new();
+            //     self.grid_pan = egui::Vec2::default();
+            // }
         });
         egui::CentralPanel::default().show(ctx, |ui| {
             let (response, painter) =
@@ -76,24 +75,24 @@ impl eframe::App for App {
                 }
             }
 
-            // paint cells
-            if response.clicked() || response.dragged() {
-                let input = response.ctx.input(|i| i.clone());
-
-                let Some(click) = response.interact_pointer_pos() else {
-                    return;
-                };
-
-                let x = ((click.x - center.x - self.grid_pan.x) / CELL_SIZE_PX).floor() as i32;
-                let y = ((click.y - center.y - self.grid_pan.y) / CELL_SIZE_PX).floor() as i32;
-                let ccoord = CellCoord::new(x, y);
-
-                if input.pointer.button_down(egui::PointerButton::Primary) {
-                    self.sim_state.cell_configuration.spawn(ccoord);
-                } else if input.pointer.button_down(egui::PointerButton::Secondary) {
-                    self.sim_state.cell_configuration.despawn(ccoord);
-                }
-            }
+            // // paint cells
+            // if response.clicked() || response.dragged() {
+            //     let input = response.ctx.input(|i| i.clone());
+            //
+            //     let Some(click) = response.interact_pointer_pos() else {
+            //         return;
+            //     };
+            //
+            //     let x = ((click.x - center.x - self.grid_pan.x) / CELL_SIZE_PX).floor() as i32;
+            //     let y = ((click.y - center.y - self.grid_pan.y) / CELL_SIZE_PX).floor() as i32;
+            //     let ccoord = CellCoord::new(x, y);
+            //
+            //     if input.pointer.button_down(egui::PointerButton::Primary) {
+            //         self.sim_state.cell_configuration.spawn(ccoord);
+            //     } else if input.pointer.button_down(egui::PointerButton::Secondary) {
+            //         self.sim_state.cell_configuration.despawn(ccoord);
+            //     }
+            // }
 
             // EXTREMELY unoptimized, however, it works, so I'll leave it here for now
             if self.show_grid {
@@ -123,7 +122,7 @@ impl eframe::App for App {
                 painter.rect_filled(viewport, 0.0, egui::Color32::WHITE);
             }
 
-            for cell in self.sim_state.cell_configuration.iter() {
+            for cell in self.shared.take().iter() {
                 paint_cell(
                     &painter,
                     center,
@@ -135,12 +134,7 @@ impl eframe::App for App {
             }
         });
 
-        // Sim run, uncapped rn
-        if self.sim_state.is_running || self.sim_state.step_once {
-            self.sim_state.step_once = false;
-            self.sim_state.cell_configuration = logical_step(&self.sim_state.cell_configuration);
-            ctx.request_repaint()
-        }
+        ctx.request_repaint()
     }
 }
 
