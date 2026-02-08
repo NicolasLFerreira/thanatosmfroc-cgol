@@ -2,27 +2,21 @@ use crate::types::cell_configuration::CellConfiguration;
 use crate::types::cell_coord::CellCoord;
 use std::collections::HashMap;
 
+#[rustfmt::skip]
+const NEIGHBOURS: [(i32, i32); 8] = [
+    (-1, -1), (-1, 0), (-1, 1),
+    (0, -1), /* 0, 0 */ (0, 1),
+    (1, -1), (1, 0), (1, 1),
+];
+
 pub fn simulation(cconf: &CellConfiguration) -> CellConfiguration {
     let mut neighbours: HashMap<CellCoord, u8> = HashMap::new();
 
-    // init alive cells with 0 neighbours
-    for coord in cconf.iter() {
-        neighbours.insert(coord, 0);
-    }
-
-    // compute neighbours
+    // neighbour calculation
     for ccoord in cconf.iter() {
-        for dx in -1..=1 {
-            for dy in -1..=1 {
-                if dx == 0 && dy == 0 {
-                    continue;
-                }
-                let d_ccoord = CellCoord::new(dx, dy);
-
-                let key = ccoord + d_ccoord;
-                let entry = neighbours.entry(key).or_insert(0);
-                *entry += 1;
-            }
+        for dxy in NEIGHBOURS {
+            let entry = neighbours.entry(ccoord + dxy).or_insert(0);
+            *entry += 1;
         }
     }
 

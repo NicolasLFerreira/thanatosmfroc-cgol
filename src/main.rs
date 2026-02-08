@@ -2,7 +2,7 @@ use crossbeam::atomic::AtomicCell;
 use eframe::Renderer;
 use std::sync::Arc;
 use std::thread;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use tmfroc::conway::simulation::*;
 use tmfroc::thanatos;
 use tmfroc::types::cell_configuration::CellConfiguration;
@@ -10,18 +10,21 @@ use tmfroc::types::cell_coord::CellCoord;
 use tmfroc::ui::app::App;
 
 fn main() {
-    let seed_cells: Vec<CellCoord> = vec![
+    let glider: Vec<CellCoord> = vec![
         CellCoord::new(0, 0),
-        CellCoord::new(1, 0),
-        CellCoord::new(2, 0),
+        CellCoord::new(0, 1),
+        CellCoord::new(0, 2),
+        CellCoord::new(1, 2),
+        CellCoord::new(2, 1),
     ];
 
+    let seed_cells = CellConfiguration::random_configuration(42, 20, 20, 0.3);
     let shared = Arc::new(AtomicCell::new(Arc::new(CellConfiguration::new())));
 
     // Simulation thread
     {
         let clone = Arc::clone(&shared);
-        thread::spawn(move || run_logic(seed_cells, clone))
+        thread::spawn(move || run_logic(glider, clone))
     };
 
     run_ui(shared);
@@ -49,6 +52,7 @@ fn run_logic(seed_cells: Vec<CellCoord>, shared: Arc<AtomicCell<Arc<CellConfigur
         // Publish a snapshot to UI (or other observers)
         // Only the Arc is cloned, not the entire HashSet
         shared.store(Arc::new(cconf.clone()));
+        thread::sleep(Duration::from_millis(500));
     }
 }
 

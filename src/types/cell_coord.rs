@@ -29,23 +29,45 @@ impl CellCoord {}
 
 // Arithmetic
 impl Add for CellCoord {
-    type Output = CellCoord;
+    type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        CellCoord {
+        Self {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
         }
     }
 }
 
+impl Add<(i32, i32)> for CellCoord{
+    type Output = Self;
+
+    fn add(self, rhs: (i32, i32)) -> Self::Output {
+        Self {
+            x: self.x + rhs.0,
+            y: self.y + rhs.1,
+        }
+    }
+}
+
 impl Sub for CellCoord {
-    type Output = CellCoord;
+    type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        CellCoord {
+        Self {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
+        }
+    }
+}
+
+impl Sub<(i32, i32)> for CellCoord {
+    type Output = Self;
+
+    fn sub(self, rhs: (i32, i32)) -> Self::Output {
+        Self {
+            x: self.x - rhs.0,
+            y: self.y - rhs.1,
         }
     }
 }

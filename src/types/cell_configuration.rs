@@ -3,7 +3,7 @@ use rand::prelude::StdRng;
 use rand::{RngExt, SeedableRng};
 use std::collections::HashSet;
 
-#[derive(Default)]
+#[derive(Default, PartialEq, Eq)]
 pub struct CellConfiguration {
     internal_cells: HashSet<CellCoord>,
 }
