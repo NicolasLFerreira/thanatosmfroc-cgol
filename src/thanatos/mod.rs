@@ -1,2 +1,2 @@
-pub mod tmfroc;
 mod canonical;
+pub mod tmfroc;

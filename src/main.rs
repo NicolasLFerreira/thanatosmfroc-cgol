@@ -6,7 +6,6 @@ use conway::simulation::*;
 use eframe::Renderer;
 use std::collections::HashSet;
 use std::time::Instant;
-use thanatos::tmfroc::thanatos_core;
 use ui::app::App;
 
 const CELL_SIZE_PX: f32 = 16.0;
@@ -30,7 +29,7 @@ fn main() {
 fn logical_step(mut configuration: &mut Grid) {
     let mut start = Instant::now();
 
-    thanatos_core(&configuration);
+    thanatos::tmfroc::run(&configuration);
 
     let elapsed = start.elapsed();
     println!("Thanatos: {:?}", elapsed);

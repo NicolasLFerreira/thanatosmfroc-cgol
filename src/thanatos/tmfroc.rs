@@ -3,7 +3,7 @@ use crate::thanatos::canonical::compute_canonical;
 use wyhash::wyhash;
 
 /// Heart of Thanatos: MFROC
-pub fn thanatos_core(configuration: &Grid) {
+pub fn run(configuration: &Grid) {
     let canonical = compute_canonical(configuration);
     let hash = compute_hash(&canonical);
 
