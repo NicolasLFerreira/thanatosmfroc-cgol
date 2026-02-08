@@ -1,24 +1,29 @@
 use crate::types::cell_coord::CellCoord;
+use fxhash::FxBuildHasher;
 use rand::prelude::StdRng;
 use rand::{RngExt, SeedableRng};
-use std::collections::HashSet;
+
+type InternalCells = hashbrown::HashSet<CellCoord, FxBuildHasher>;
 
 #[derive(Default, PartialEq, Eq)]
 pub struct CellConfiguration {
-    internal_cells: HashSet<CellCoord>,
+    internal_cells: InternalCells,
 }
 
 // Instantiation
 impl CellConfiguration {
     pub fn new() -> Self {
         Self {
-            internal_cells: HashSet::new(),
+            internal_cells: InternalCells::default(),
         }
     }
 
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
-            internal_cells: HashSet::with_capacity(capacity),
+            internal_cells: InternalCells::with_capacity_and_hasher(
+                capacity,
+                FxBuildHasher::default(),
+            ),
         }
     }
 

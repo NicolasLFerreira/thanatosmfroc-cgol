@@ -10,8 +10,6 @@ const NEIGHBOURS: [(i32, i32); 8] = [
 ];
 
 pub fn simulation(cconf: &CellConfiguration) -> CellConfiguration {
-    // pre-allocation helps a little bit with .entry() performance hits
-    // let mut neighbours: HashMap<CellCoord, u8> = HashMap::with_capacity(cconf.len() * 8);
     let mut neighbours: hashbrown::HashMap<CellCoord, u8, FxBuildHasher> =
         hashbrown::HashMap::with_capacity_and_hasher(cconf.len() * 8, FxBuildHasher::default());
 
