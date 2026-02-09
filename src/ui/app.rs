@@ -1,5 +1,6 @@
-use crate::types::CellConfiguration;
+use crate::persistence::Database;
 use crate::types::SimulationFeed;
+use crate::types::{CanonicalConfiguration, CellConfiguration};
 use std::time::Duration;
 
 const CELL_SIZE_PX: f32 = 16.0;
@@ -9,6 +10,8 @@ pub struct App {
     show_grid: bool,
     sim_feed: SimulationFeed,
     cconf: CellConfiguration,
+    input_buffer: String,
+    can_conf: CanonicalConfiguration,
 }
 
 impl App {
@@ -18,16 +21,18 @@ impl App {
             show_grid: false,
             sim_feed: feed,
             cconf: CellConfiguration::default(),
+            input_buffer: String::default(),
+            can_conf: CanonicalConfiguration::default(),
         }
     }
 }
 
 impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        let payload = self.sim_feed.take();
-        if let Some(cconf) = &payload.cconf {
-            self.cconf = cconf.clone();
-        }
+        // let payload = self.sim_feed.take();
+        // if let Some(cconf) = &payload.cconf {
+        //     self.cconf = cconf.clone();
+        // }
 
         egui::TopBottomPanel::top("top").show(ctx, |ui| {
             egui::containers::menu::MenuBar::new().ui(ui, |ui| {
@@ -48,19 +53,26 @@ impl eframe::App for App {
         });
         egui::SidePanel::left("stats").show(ctx, |ui| {
             ui.heading("Simulation Statistics");
+            ui.label("Enter hash:");
+            let response = ui.text_edit_singleline(&mut self.input_buffer);
+
+            if response.lost_focus() {
+                if let Ok(parsed) = self.input_buffer.parse::<u128>() {
+                    let cconf = Database::open().get(parsed).unwrap();
+                    self.can_conf = cconf.clone();
+                    self.cconf = CellConfiguration::from_packed(cconf.configuration);
+                }
+            }
         });
         egui::SidePanel::right("tools").show(ctx, |ui| {
             ui.heading("Grid tools");
             ui.checkbox(&mut self.show_grid, "Show Grid (laggy)");
             ui.heading("Simulation tools");
-            // ui.checkbox(&mut self.sim_state.is_running, "Run");
-            // if ui.button("Step").clicked() {
-            //     self.sim_state.step_once = true;
-            // }
-            // if ui.button("Clear").clicked() {
-            //     self.sim_state.cell_configuration = CellConfiguration::new();
-            //     self.grid_pan = egui::Vec2::default();
-            // }
+            if ui.button("Step").clicked() {
+                let cconf = Database::open().get(self.can_conf.next_hash).unwrap();
+                self.can_conf = cconf.clone();
+                self.cconf = CellConfiguration::from_packed(cconf.configuration);
+            }
         });
         egui::CentralPanel::default().show(ctx, |ui| {
             let (response, painter) =
@@ -79,25 +91,6 @@ impl eframe::App for App {
                     self.grid_pan += response.drag_delta();
                 }
             }
-
-            // // paint cells
-            // if response.clicked() || response.dragged() {
-            //     let input = response.ctx.input(|i| i.clone());
-            //
-            //     let Some(click) = response.interact_pointer_pos() else {
-            //         return;
-            //     };
-            //
-            //     let x = ((click.x - center.x - self.grid_pan.x) / CELL_SIZE_PX).floor() as i32;
-            //     let y = ((click.y - center.y - self.grid_pan.y) / CELL_SIZE_PX).floor() as i32;
-            //     let ccoord = CellCoord::new(x, y);
-            //
-            //     if input.pointer.button_down(egui::PointerButton::Primary) {
-            //         self.sim_state.cell_configuration.spawn(ccoord);
-            //     } else if input.pointer.button_down(egui::PointerButton::Secondary) {
-            //         self.sim_state.cell_configuration.despawn(ccoord);
-            //     }
-            // }
 
             // EXTREMELY unoptimized, however, it works, so I'll leave it here for now
             if self.show_grid {

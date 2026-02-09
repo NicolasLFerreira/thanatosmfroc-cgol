@@ -1,4 +1,5 @@
 use crate::types::cell_coord::CellCoord;
+use crate::utilities::bit_packing::unpack_u64_u32;
 use fxhash::FxBuildHasher;
 use rand::prelude::StdRng;
 use rand::{RngExt, SeedableRng};
@@ -10,7 +11,7 @@ pub struct CellConfiguration {
     internal_cells: InternalCells,
 }
 
-// Instantiation
+// Init
 impl CellConfiguration {
     pub fn new() -> Self {
         Self {
@@ -31,6 +32,19 @@ impl CellConfiguration {
         Self {
             internal_cells: soup.into_iter().collect(),
         }
+    }
+
+    pub fn from_packed(packed: Vec<u64>) -> Self {
+        let mut cconf = CellConfiguration::new();
+        for bpc in packed {
+            let (l, r) = unpack_u64_u32(bpc);
+            cconf.spawn(CellCoord {
+                x: l as i32,
+                y: r as i32,
+            });
+        }
+
+        cconf
     }
 }
 
@@ -59,12 +73,7 @@ impl CellConfiguration {
 
 // Utility
 impl CellConfiguration {
-    pub fn cook_soup(
-        seed: u64,
-        width: usize,
-        height: usize,
-        density: f64,
-    ) -> Vec<CellCoord> {
+    pub fn cook_soup(seed: u64, width: usize, height: usize, density: f64) -> Vec<CellCoord> {
         let mut rng = StdRng::seed_from_u64(seed);
         let mut cells = Vec::new();
 

@@ -1,9 +1,10 @@
 pub mod conway;
 pub mod mfrac;
+pub mod orchestration;
+pub mod persistence;
 pub mod profilers;
+pub mod startup;
 pub mod types;
 pub mod ui;
 pub mod utilities;
-pub mod persistence;
-pub mod startup;
-pub mod orchestration;
+pub mod visualization;
