@@ -4,7 +4,7 @@ use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 use thanatos::conway;
-use thanatos::mfroc;
+use thanatos::mfrac;
 use thanatos::types::CellConfiguration;
 use thanatos::types::CellCoord;
 use thanatos::types::SimulationFeed;
@@ -36,7 +36,7 @@ fn start_simulation(seed_cells: Vec<CellCoord>, feed: SimulationFeed) {
     let mut cconf = CellConfiguration::with_seed_configuration(seed_cells);
     loop {
         // Run Thanatos on current configuration
-        mfroc::process_mfroc(&cconf);
+        mfrac::process_mfrac(&cconf);
 
         // Step Conway
         let new_cconf = conway::step(&cconf);

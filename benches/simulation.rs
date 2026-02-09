@@ -13,9 +13,9 @@ fn bench_simulation(c: &mut Criterion) {
         })
     });
 
-    c.bench_function("mfroc", |b| {
+    c.bench_function("mfrac", |b| {
         b.iter(|| {
-            thanatos::mfroc::process_mfroc(black_box(&input));
+            thanatos::mfrac::process_mfrac(black_box(&input));
         })
     });
 }

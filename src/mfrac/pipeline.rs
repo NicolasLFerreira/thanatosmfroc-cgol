@@ -1,8 +1,8 @@
-use crate::mfroc::canonical::compute_canonical;
+use crate::mfrac::canonical::compute_canonical;
 use crate::types::CellConfiguration;
 use wyhash::wyhash;
 
-pub fn process_mfroc(configuration: &CellConfiguration) {
+pub fn process_mfrac(configuration: &CellConfiguration) {
     let canonical = compute_canonical(configuration);
     let hash = compute_hash(&canonical);
 }
