@@ -1,4 +1,4 @@
-use crate::types::cell_configuration::CellConfiguration;
+use crate::types::CellConfiguration;
 
 /// Computes the canonical representation of a given cell configuration, independent of rotation and mirroring.
 /// * `cells` - The original, absolute, non-normalized configuration

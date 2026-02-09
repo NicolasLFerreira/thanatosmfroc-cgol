@@ -1,5 +1,5 @@
-use crate::types::cell_configuration::CellConfiguration;
-use crate::types::simulation_feed::SimulationFeed;
+use crate::types::CellConfiguration;
+use crate::types::SimulationFeed;
 use std::time::Duration;
 
 const CELL_SIZE_PX: f32 = 16.0;

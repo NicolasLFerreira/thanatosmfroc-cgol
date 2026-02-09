@@ -1,5 +1,5 @@
-use crate::types::cell_configuration::CellConfiguration;
-use crate::types::cell_coord::CellCoord;
+use crate::types::CellConfiguration;
+use crate::types::CellCoord;
 use fxhash::FxBuildHasher;
 
 // Pre-computed neighbour deltas.

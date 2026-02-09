@@ -1,7 +1,7 @@
 use criterion::{Criterion, criterion_group, criterion_main};
 use std::hint::black_box;
 use thanatos::conway;
-use thanatos::types::cell_configuration::CellConfiguration;
+use thanatos::types::CellConfiguration;
 
 fn bench_simulation(c: &mut Criterion) {
     let seed_cells = CellConfiguration::random_configuration(42, 50, 50, 0.5);

@@ -5,10 +5,10 @@ use std::thread;
 use std::time::Duration;
 use thanatos::conway;
 use thanatos::mfroc;
-use thanatos::types::cell_configuration::CellConfiguration;
-use thanatos::types::cell_coord::CellCoord;
-use thanatos::types::simulation_feed::SimulationFeed;
-use thanatos::types::simulation_payload::SimulationPayload;
+use thanatos::types::CellConfiguration;
+use thanatos::types::CellCoord;
+use thanatos::types::SimulationFeed;
+use thanatos::types::SimulationPayload;
 use thanatos::ui::app::App;
 
 fn main() {

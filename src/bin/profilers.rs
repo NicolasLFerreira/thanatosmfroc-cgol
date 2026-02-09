@@ -6,11 +6,8 @@ fn main() {
         .build()
         .unwrap();
 
-    let seed = thanatos::types::cell_configuration::CellConfiguration::random_configuration(
-        42, 10, 10, 0.2,
-    );
-    let cconf =
-        thanatos::types::cell_configuration::CellConfiguration::with_seed_configuration(seed);
+    let seed = thanatos::types::CellConfiguration::random_configuration(42, 10, 10, 0.2);
+    let cconf = thanatos::types::CellConfiguration::with_seed_configuration(seed);
     for _ in 0..10_000 {
         thanatos::conway::step(&cconf);
     }

@@ -1,5 +1,5 @@
 use crate::mfroc::canonical::compute_canonical;
-use crate::types::cell_configuration::CellConfiguration;
+use crate::types::CellConfiguration;
 use wyhash::wyhash;
 
 pub fn process_mfroc(configuration: &CellConfiguration) {
