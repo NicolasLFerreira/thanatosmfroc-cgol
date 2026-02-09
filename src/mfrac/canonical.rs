@@ -1,8 +1,9 @@
 use crate::types::CellConfiguration;
+use crate::utilities::bit_packing::pack_u32_u64;
 
 /// Computes the canonical representation of a given cell configuration, independent of rotation and mirroring.
 /// * `cells` - The original, absolute, non-normalized configuration
-pub fn compute_canonical(cells: &CellConfiguration) -> Vec<(u32, u32)> {
+pub fn compute_canonical(cells: &CellConfiguration) -> Vec<u64> {
     // Converts to vec for easier handling
     let cells: Vec<_> = cells.iter().collect();
 
@@ -88,7 +89,7 @@ pub fn compute_canonical(cells: &CellConfiguration) -> Vec<(u32, u32)> {
 
     let canonical = ordered.iter().min().unwrap();
 
-    canonical.to_vec()
+    canonical.iter().map(|c| pack_u32_u64(c.0, c.1)).collect()
 }
 
 // Canonicalization rules:

@@ -5,3 +5,6 @@
 # Profiling output
 *.svg
 *.csv
+
+# Persistence
+data/

@@ -12,6 +12,10 @@ use thanatos::types::SimulationPayload;
 use thanatos::ui::app::App;
 
 fn main() {
+    startup();
+}
+
+fn startup() {
     let glider: Vec<CellCoord> = vec![
         CellCoord::new(0, 0),
         CellCoord::new(0, 1),
