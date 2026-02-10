@@ -1,9 +1,9 @@
+use crate::conway;
 use crate::mfrac::Mfrac;
 use crate::types::{
     CellConfiguration, CellCoord, MfracOutcome, MfracTerminationReason, SimulationFeed,
     SimulationPayload,
 };
-use crate::{conway, mfrac};
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
@@ -58,11 +58,13 @@ fn state_machine(
                 println!("|Collided with: {}", hash);
             }
             MfracOutcome::Termination(reason) => match reason {
-                MfracTerminationReason::LimitExceeded(limit) => {
+                MfracTerminationReason::GenerationLimitExceeded(limit) => {
                     println!("|Limit exceeded: {limit}");
                 }
-                MfracTerminationReason::StaleLife => {}
-                MfracTerminationReason::Oscillator => {}
+                MfracTerminationReason::CanonicalStabilisation => {
+                    println!("|Canonical Stabilisation state reached");
+                }
+                MfracTerminationReason::CanonicalOscillation => {}
             },
         }
     }
@@ -95,5 +97,8 @@ fn simulation_run(
         }
     }
 
-    MfracOutcome::Termination(MfracTerminationReason::LimitExceeded(max_generation_count))
+    mfrac.force_collapse();
+    MfracOutcome::Termination(MfracTerminationReason::GenerationLimitExceeded(
+        max_generation_count,
+    ))
 }

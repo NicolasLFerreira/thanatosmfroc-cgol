@@ -1,11 +1,13 @@
 use criterion::{Criterion, criterion_group, criterion_main};
 use std::hint::black_box;
 use thanatos::conway;
+use thanatos::mfrac::Mfrac;
 use thanatos::types::CellConfiguration;
 
 fn bench_simulation(c: &mut Criterion) {
     let soup = CellConfiguration::cook_soup(42, 50, 50, 0.5);
     let input = CellConfiguration::from_soup(soup);
+    let mut mfrac = Mfrac::init();
 
     c.bench_function("conway", |b| {
         b.iter(|| {
@@ -15,7 +17,7 @@ fn bench_simulation(c: &mut Criterion) {
 
     c.bench_function("mfrac", |b| {
         b.iter(|| {
-            thanatos::mfrac::run_pipeline(black_box(&input));
+            mfrac.run_pipeline(black_box(&input));
         })
     });
 }

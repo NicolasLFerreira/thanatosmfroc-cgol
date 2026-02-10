@@ -36,14 +36,11 @@ pub fn step(cconf: &CellConfiguration) -> CellConfiguration {
     }
 
     // pre-allocated with space
-    let mut new_cconf = CellConfiguration::with_capacity(cconf.len() * 8);
+    let mut new_cconf = CellConfiguration::with_capacity(neighbours.len());
 
     // apply spawn conditions
     for (coord, count) in neighbours {
-        if cconf.is_alive(coord) && count == 2 {
-            new_cconf.spawn(coord);
-        }
-        if count == 3 {
+        if count == 3 || (cconf.is_alive(coord) && count == 2) {
             new_cconf.spawn(coord);
         }
     }
